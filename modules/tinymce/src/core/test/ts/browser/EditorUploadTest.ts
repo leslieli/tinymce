@@ -293,7 +293,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
       Assert.eq('No element in the editor', undefined, editor.$('img')[0]);
       Assert.eq('Status is false', result[0].status, false);
       Assert.eq('Uri is empty', result[0].uploadUri, '');
-      Assert.eq('Suitable number of stacks added', 2, editor.undoManager.data.length);
+      Assert.eq('Suitable number of stacks added', 1, editor.undoManager.data.length);
     };
 
     editor.setContent(imageHtml(testBlobDataUri));
