@@ -60,7 +60,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
   const hasBlobAsSource = (elm) =>
     elm.src.indexOf('blob:') === 0;
 
-  const sScanForImages = (editor) => Log.step('TBA', '_scanForImages', Step.async((done, die) => {
+  const sScanForImages = (editor: Editor) => Log.step('TBA', '_scanForImages', Step.async((done, die) => {
     editor.setContent(imageHtml(testBlobDataUri));
 
     editor._scanForImages().then((result) => {
@@ -76,7 +76,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     }).then(done, die);
   }));
 
-  const sReplaceUploadUri = (editor) => Log.step('TBA', 'replace uploaded blob uri with result uri (copy/paste of an uploaded blob uri)', Step.async((done, die) => {
+  const sReplaceUploadUri = (editor: Editor) => Log.step('TBA', 'replace uploaded blob uri with result uri (copy/paste of an uploaded blob uri)', Step.async((done, die) => {
     editor.setContent(imageHtml(testBlobDataUri));
 
     editor.settings.images_upload_handler = (_data: BlobInfo, success) => {
@@ -94,7 +94,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     }).then(done, die);
   }));
 
-  const sNoReplaceUploadUri = (editor) => Log.step('TBA', `don't replace uploaded blob uri with result uri (copy/paste of an uploaded blob uri) since blob uris are retained`, Step.async((done, die) => {
+  const sNoReplaceUploadUri = (editor: Editor) => Log.step('TBA', `don't replace uploaded blob uri with result uri (copy/paste of an uploaded blob uri) since blob uris are retained`, Step.async((done, die) => {
     editor.settings.images_replace_blob_uris = false;
     editor.setContent(imageHtml(testBlobDataUri));
 
@@ -113,7 +113,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     }).then(done, die);
   }));
 
-  const sUploadImagesCallback = (editor) => Log.step('TBA', 'uploadImages (callback)', Step.async((done, die) => {
+  const sUploadImagesCallback = (editor: Editor) => Log.step('TBA', 'uploadImages (callback)', Step.async((done, die) => {
     let uploadedBlobInfo, uploadUri;
 
     editor.setContent(imageHtml(testBlobDataUri));
@@ -131,7 +131,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     })).then(done, die);
   }));
 
-  const sUploadImagesPromise = (editor) => Log.step('TBA', 'uploadImages (promise)', Step.async((done, die) => {
+  const sUploadImagesPromise = (editor: Editor) => Log.step('TBA', 'uploadImages (promise)', Step.async((done, die) => {
     let uploadedBlobInfo, uploadUri;
 
     editor.setContent(imageHtml(testBlobDataUri));
@@ -154,7 +154,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     }).then(done, die);
   }));
 
-  const sUploadImagesRetainUrl = (editor) => Log.step('TBA', 'uploadImages retain blob urls after upload', Step.async((done, die) => {
+  const sUploadImagesRetainUrl = (editor: Editor) => Log.step('TBA', 'uploadImages retain blob urls after upload', Step.async((done, die) => {
     let uploadedBlobInfo;
 
     const assertResultRetainsUrl = (result) => {
@@ -183,7 +183,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     }).then(done, die);
   }));
 
-  const sUploadImagesReuseFilename = (editor) => Log.step('TBA', 'uploadImages reuse filename', Step.async((done, die) => {
+  const sUploadImagesReuseFilename = (editor: Editor) => Log.step('TBA', 'uploadImages reuse filename', Step.async((done, die) => {
     let uploadedBlobInfo;
 
     editor.settings.images_reuse_filename = true;
@@ -215,7 +215,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     });
   }));
 
-  const sUploadConcurrentImages = (editor) => Log.step('TBA', 'uploadConcurrentImages', Step.async((done, die) => {
+  const sUploadConcurrentImages = (editor: Editor) => Log.step('TBA', 'uploadConcurrentImages', Step.async((done, die) => {
     let uploadCount = 0, callCount = 0;
 
     const uploadDone = (result) => {
@@ -246,7 +246,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     ]).then(done, die);
   }));
 
-  const sUploadConcurrentImagesFail = (editor) => Log.step('TBA', 'uploadConcurrentImages (fail)', Step.async((done, die) => {
+  const sUploadConcurrentImagesFail = (editor: Editor) => Log.step('TBA', 'uploadConcurrentImages (fail)', Step.async((done, die) => {
     let uploadCount = 0, callCount = 0;
 
     const uploadDone = (result: UploadResult[]) => {
@@ -278,8 +278,9 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     ]).then(done, die);
   }));
 
-  const sUploadConcurrentImagesFailWithRemove = (editor) => Log.step('TBA', 'uploadConcurrentImages fails, with remove', Step.async((done, die) => {
-    let uploadCount = 0, callCount = 0;
+  const sUploadConcurrentImagesFailWithRemove = (editor: Editor) => Log.step('TBA', 'uploadConcurrentImages fails, with remove', Step.async((done, die) => {
+    let uploadCount = 0;
+    let callCount = 0;
 
     const uploadDone = (result: UploadResult[]) => {
       callCount++;
@@ -292,6 +293,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
       Assert.eq('No element in the editor', undefined, editor.$('img')[0]);
       Assert.eq('Status is false', result[0].status, false);
       Assert.eq('Uri is empty', result[0].uploadUri, '');
+      Assert.eq('Suitable number of stacks added', 2, editor.undoManager.data.length);
     };
 
     editor.setContent(imageHtml(testBlobDataUri));
@@ -310,7 +312,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     ]).then(done, die);
   }));
 
-  const sDoNotUploadTransparentImage = (editor) => Log.step('TBA', `Don't upload transparent image`, Step.async((done, die) => {
+  const sDoNotUploadTransparentImage = (editor: Editor) => Log.step('TBA', `Don't upload transparent image`, Step.async((done, die) => {
     let uploadCount = 0;
 
     const uploadDone = () => {
@@ -327,7 +329,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     editor.uploadImages(uploadDone).then(done, die);
   }));
 
-  const sDoNotUploadBogusImage = (editor) => Log.step('TBA', `Don't upload bogus image`, Step.async((done, die) => {
+  const sDoNotUploadBogusImage = (editor: Editor) => Log.step('TBA', `Don't upload bogus image`, Step.async((done, die) => {
     let uploadCount = 0;
 
     const uploadDone = () => {
@@ -344,7 +346,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     editor.uploadImages(uploadDone).then(done, die);
   }));
 
-  const sDoNotUploadFilteredImage = (editor) => Log.step('TBA', `Don't upload filtered image`, Step.async((done, die) => {
+  const sDoNotUploadFilteredImage = (editor: Editor) => Log.step('TBA', `Don't upload filtered image`, Step.async((done, die) => {
     let uploadCount = 0;
 
     const uploadDone = () => {
@@ -363,7 +365,7 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     editor.uploadImages(uploadDone).then(done, die);
   }));
 
-  const sDoNotUploadApiFilteredImage = (editor) => Log.step('TBA', `Don't upload api filtered image`, Step.async((done, die) => {
+  const sDoNotUploadApiFilteredImage = (editor: Editor) => Log.step('TBA', `Don't upload api filtered image`, Step.async((done, die) => {
     let uploadCount = 0, filterCount = 0;
 
     const uploadDone = () => {
@@ -388,12 +390,12 @@ UnitTest.asynctest('browser.tinymce.core.EditorUploadTest', (success, failure) =
     editor.uploadImages(uploadDone).then(done, die);
   }));
 
-  const sRetainBlobsNotInCache = (editor) => Log.step('TBA', 'Retain blobs not in blob cache', Step.sync(() => {
+  const sRetainBlobsNotInCache = (editor: Editor) => Log.step('TBA', 'Retain blobs not in blob cache', Step.sync(() => {
     editor.setContent('<img src="blob:http%3A//host/f8d1e462-8646-485f-87c5-f9bcee5873c6">');
     Assert.eq('Retain blobs not in blob cache', editor.getContent(), '<p><img src="blob:http%3A//host/f8d1e462-8646-485f-87c5-f9bcee5873c6" /></p>');
   }));
 
-  TinyLoader.setupLight((editor, onSuccess, onFailure) => {
+  TinyLoader.setupLight((editor: Editor, onSuccess, onFailure) => {
     const canvas = document.createElement('canvas');
     canvas.width = 320;
     canvas.height = 200;
